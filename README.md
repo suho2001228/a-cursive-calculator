@@ -1,5 +1,12 @@
 # 2022학년도 1학기 컴퓨터 비전 프로젝트
 ## 필기체 계산기
+
+필기체 계산기 프로그램 실행 영상
+
+https://user-images.githubusercontent.com/103232995/181704288-2cd9aff3-2597-4b78-9339-f9fd9b9296ef.mp4
+
+유튜브 영상 : https://youtu.be/-ijsDiOtz5I
+
 인식되는 문자들 
 
 * 숫자 : 0 1 2 3 4 5 6 7 8 9
