@@ -10,6 +10,29 @@
 * 원주율 : π
 * 자연상수 : e 
 
+## 필기체 계산기 알고리즘
+![슬라이드1](https://user-images.githubusercontent.com/103232995/181683549-3ccc3bea-70e1-42ff-939a-9bb573fa464d.JPG)
+![슬라이드2](https://user-images.githubusercontent.com/103232995/181683591-22b13e88-2230-4a4d-9a5c-b6835b0dc6e7.JPG)
+![슬라이드3](https://user-images.githubusercontent.com/103232995/181683594-60ee789d-c39c-4a0d-b126-569b24f2f949.JPG)
+![슬라이드4](https://user-images.githubusercontent.com/103232995/181683595-363545d9-45d0-44c7-8a4a-a603d84afdec.JPG)
+![슬라이드5](https://user-images.githubusercontent.com/103232995/181683596-4bfcfcd0-df01-4ffb-9167-7a9b23a76177.JPG)
+![슬라이드6](https://user-images.githubusercontent.com/103232995/181683598-f352de1b-b2bb-4d0c-8d2e-7c0fd2d307ef.JPG)
+![슬라이드7](https://user-images.githubusercontent.com/103232995/181683599-737aa580-8719-4674-a1cb-f223ee3ccb6a.JPG)
+![슬라이드8](https://user-images.githubusercontent.com/103232995/181683600-7e052d04-5633-47c5-9eb7-ebe459003472.JPG)
+![슬라이드9](https://user-images.githubusercontent.com/103232995/181683602-0c9d2435-177e-4f5f-a7df-72e2eaaebea1.JPG)
+![슬라이드10](https://user-images.githubusercontent.com/103232995/181683603-6e66ae44-707c-4485-a3d6-cbcf7f93984e.JPG)
+![슬라이드11](https://user-images.githubusercontent.com/103232995/181683608-2a4ef2ca-9925-44d6-b153-7787bc0a4ba0.JPG)
+![슬라이드12](https://user-images.githubusercontent.com/103232995/181683610-8f79779e-3ba6-4f22-8a41-d048073e6a6a.JPG)
+![슬라이드13](https://user-images.githubusercontent.com/103232995/181683612-6d63234b-181d-4c1e-afa5-3a2874b613cc.JPG)
+![슬라이드14](https://user-images.githubusercontent.com/103232995/181683614-5e043477-5507-4c74-a6d6-b2193ec0b3c9.JPG)
+![슬라이드15](https://user-images.githubusercontent.com/103232995/181683616-e929536c-0433-465e-a0df-e2a666f3b51b.JPG)
+![슬라이드16](https://user-images.githubusercontent.com/103232995/181683618-df141b1d-bcab-4613-9c13-f9f339bf6a50.JPG)
+![슬라이드17](https://user-images.githubusercontent.com/103232995/181683620-220d142c-f028-47ed-ba4c-4015627c51d8.JPG)
+![슬라이드18](https://user-images.githubusercontent.com/103232995/181683622-b17ee941-1e88-4fde-8878-41518ec10180.JPG)
+
+
+## 필기체 계산기 소스코드
+
 ``` c++
 
 #include <opencv2/opencv.hpp>
