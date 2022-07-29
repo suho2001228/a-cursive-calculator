@@ -464,11 +464,11 @@ if (contours.size() == 1) { // 1,2,3,5,7,+,-,x,/,(,)
 	}
 	*/
 }
-'''
+```
 
 ### 숫자, 기호 구분 알고리즘
 
-''' 
+``` 
 // 루트에 괄호 추가
 			cout << Calculation << endl;
 			int v_k = 0;
@@ -667,7 +667,7 @@ if (contours.size() == 1) { // 1,2,3,5,7,+,-,x,/,(,)
 
 ### 함수 정의
 
-''' c++
+``` c++
 Mat y_cut(Mat m) { // 0~9 : 각 번호의 합, 10 : 전체합
 	Mat img = m;
 	Mat ym = Mat::zeros(11, 1, CV_32SC1);
