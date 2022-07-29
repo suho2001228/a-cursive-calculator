@@ -40,7 +40,9 @@ https://user-images.githubusercontent.com/103232995/181704288-2cd9aff3-2597-4b78
 
 ## 필기체 계산기 소스코드
 
+### 
 ``` c++
+
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
@@ -92,6 +94,10 @@ double calc(vector<double>& v);
 vector<double> in_clac(vector<double>& v, int& letter_cnt_v, int& letter_po_cnt_v, int& par_left_v, int& par_right_v);
 vector<double> route_result(vector<int>& route_in_cnt, vector<double> v);
 vector<double> square_of(vector<double>& v);
+```
+
+### 메인 함수
+``` c++
 int main(void) {
 	int k;
 
@@ -114,6 +120,11 @@ int main(void) {
 	imshow("img", img);
 	k = waitKey();
 }
+```
+
+### 마우스 이벤트 
+
+``` c++
 void on_mouse(int event, int x, int y, int flags, void* userdata) {
 	Mat img = *(Mat*)userdata;
 	Mat c = img(Rect(0, 0, img.cols - 160 - 1, img.rows - 160 - 1)); // 숫자 영역
@@ -228,229 +239,237 @@ void on_mouse(int event, int x, int y, int flags, void* userdata) {
 				cout << "인식된 숫자 : ";
 
 				cout << "p2 = " << p[2] << ", p[3] = " << p[3] << endl;
-				if (contours.size() == 1) { // 1,2,3,5,7,+,-,x,/,(,)
-					if (minus_(p)) {
-						cout << "-" << endl;
-						letter.push_back(MINUS);
-						Calculation += "-";
-					}
-					else { // 1,2,3,5,7,+,x,/,(,)
-						if (one(p)) {
-							cout << "1" << endl;
-							letter.push_back(1);
-							Calculation += "1";
-						}
-						else if (divide_(cm)) {
-							cout << "/" << endl;
-							letter.push_back(DIVIDE);
-							Calculation += "/";
-						}
-						else {
-							if (times_(img, p, centroid)) { // x썻는데 5뜸
-								cout << "x" << endl;
-								letter.push_back(TIMES);
-								Calculation += "x";
-							}
-							else {
-								if (plus_(img, p, centroid)) {
-									cout << "+" << endl;
-									letter.push_back(PLUS);
-									Calculation += "+";
-								}
-								else {
-									if (p[2] < 30 && p[3] < 30) {
-										cout << "." << endl;
-										letter.push_back(PO);
-										Calculation += ".";
-									}
-									else {
-										if (pi(xm, x_avg, ym, y_avg)) {
-											cout << "파이 임" << endl;
-											if (letter.size() != 0 and letter.back() > overflow) {
-												letter.push_back(TIMES);
-											}
-											letter.push_back(CV_PI);
-											Calculation += "pi";
-										}
-										else {
-											double y9_y0 = abs(ym.at<int>(0, 0) - ym.at<int>(9, 0)) / y_avg;
-											if (seven_route(ym, y_avg, y9_y0)) {  // 인식 안됨 가끔
-												cout << cm.at<int>(1, 1) << endl;
-												if (route(cm)) {
-													cout << "route" << endl;
-													letter.push_back(ROUTE);
-													route_cnt = letter.size();
+```
 
-													v_route_in_cnt.push_back(0);
+### 숫자, 기호 구분 알고리즘
 
-													route_len_stat = p[0];
-													route_len = p[0] + p[2];
-													Calculation += "r";
-												}
-												else {
-													cout << "7" << endl;
-													letter.push_back(7);
-													Calculation += "7";
-												}
-											}
-											else {
-												int l_right = 0, l_left = 0;
-												for (int j = p[1] + 0.1 * p[3]; j < p[1] + 0.9 * p[3]; j++) {
-													if (img.at<uchar>(j, p[0] + 0.9 * p[2]) > 0) {
-														l_right++;
-														break;
-													}
-												}
-												for (int j = p[1] + 0.1 * p[3]; j < p[1] + 0.9 * p[3]; j++) {
-													if (img.at<uchar>(j, p[0] + 0.1 * p[2]) > 0) {
-														l_left++;
-														break;
-													}
-												}
-												if (par_left(xm, x_avg, l_right)) {
-													cout << "(" << endl;
-													letter.push_back(PARENTHESIS_LEFT);
-													Calculation += "(";
-												}
-												else if (par_right(xm, x_avg, l_left)) {
-													cout << ")" << endl;
-													letter.push_back(PARENTHESIS_RIGHT);
-													Calculation += ")";
-												}
-												else {
-													if (three_five(ym, y_avg)) {
-														Mat n_cut = img(Rect(p[0], p[1], centroid[0] - p[0], p[3]));
-														vector<vector<Point>> contours_cut;
-														findContours(n_cut, contours_cut, RETR_LIST, CHAIN_APPROX_SIMPLE); // 외각선 검출
-														if (contours_cut.size() == 2) {
-															cout << "5" << endl;
-															letter.push_back(5);
-															Calculation += "5";
-														}
-														else if (contours_cut.size() == 3) {
-															cout << "3" << endl;
-															letter.push_back(3);
-															Calculation += "3";
-														}
-														else {
-															cout << "인식안되서 overflow으로 처리 " << endl;
-															letter.push_back(overflow);
-														}
-													}
-													else if (two(ym, y_avg)) {
-														cout << "2" << endl;
-														letter.push_back(2);
-														Calculation += "2";
-													}
-													else {
-														cout << "인식안되서 overflow으로 처리 " << endl;
-														cout << ".." << endl;
-														letter.push_back(overflow);
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
+``` c++
+if (contours.size() == 1) { // 1,2,3,5,7,+,-,x,/,(,)
+		if (minus_(p)) {
+			cout << "-" << endl;
+			letter.push_back(MINUS);
+			Calculation += "-";
+		}
+		else { // 1,2,3,5,7,+,x,/,(,)
+			if (one(p)) {
+				cout << "1" << endl;
+				letter.push_back(1);
+				Calculation += "1";
+			}
+			else if (divide_(cm)) {
+				cout << "/" << endl;
+				letter.push_back(DIVIDE);
+				Calculation += "/";
+			}
+			else {
+				if (times_(img, p, centroid)) { // x썻는데 5뜸
+					cout << "x" << endl;
+					letter.push_back(TIMES);
+					Calculation += "x";
 				}
-				else if (contours.size() == 2) {
-
-					if (zero(cm, cm_avg, ym, y_avg, xm, x_avg)) {
-						cout << "0" << endl;
-						letter.push_back(0);
-						Calculation += "0";
-					}
-					else if (four(xm, x_avg, ym, y_avg)) {
-						cout << "4" << endl;
-						letter.push_back(4);
-						Calculation += "4";
-					}
-					else if (nine(xm, x_avg)) {
-						cout << "9" << endl;
-					//	cout << "cm(0,1) : " << cm.at<int>(0, 1) << ", cm(1,0) : " << cm.at<int>(1, 0) << endl;
-						letter.push_back(9);
-						Calculation += "9";
-					}
-					else if (six(xm, x_avg)) {
-						if (e_(cm)) {
-							cout << "e" << endl;
-							if (letter.size() != 0 and letter.back() != SQUARE and letter.back() > overflow) {
-								letter.push_back(TIMES);
-							}
-							letter.push_back(2.718281828459);
-							Calculation += "e";
-						}
-						else {
-							cout << "6" << endl;
-							//	cout << "cm(0,1) : " << cm.at<int>(0, 1) << ", cm(1,0) : " << cm.at<int>(1, 0) << endl;
-							letter.push_back(6);
-							Calculation += "6";
-
-							cout << " 9 dkf" << endl;
-							cout << xm.at<int>(0, 9) + xm.at<int>(0, 8) << " " << 2.5 * x_avg << endl;
-							cout << xm.at<int>(0, 7) + xm.at<int>(0, 8) << " " << 2.5 * x_avg << endl;
-						}
+				else {
+					if (plus_(img, p, centroid)) {
+						cout << "+" << endl;
+						letter.push_back(PLUS);
+						Calculation += "+";
 					}
 					else {
-						cout << "인식안되서 overflow으로 처리 " << endl;
-						letter.push_back(overflow);
-						xm.at<int>(0, 0) + xm.at<int>(0, 1) + xm.at<int>(0, 2) > 3 * x_avg;
-						cout << "xm(0,0~3) :" << xm.at<int>(0, 0) << ", " << xm.at<int>(0, 1) << ", " << xm.at<int>(0, 2) << endl;
-						cout << "x_avg = " << x_avg;
-						cout << "cm(0,1) : " << cm.at<int>(0, 1) << ", cm(1,0) : " << cm.at<int>(1, 0) << endl;
+						if (p[2] < 30 && p[3] < 30) {
+							cout << "." << endl;
+							letter.push_back(PO);
+							Calculation += ".";
+						}
+						else {
+							if (pi(xm, x_avg, ym, y_avg)) {
+								cout << "파이 임" << endl;
+								if (letter.size() != 0 and letter.back() > overflow) {
+									letter.push_back(TIMES);
+								}
+								letter.push_back(CV_PI);
+								Calculation += "pi";
+							}
+							else {
+								double y9_y0 = abs(ym.at<int>(0, 0) - ym.at<int>(9, 0)) / y_avg;
+								if (seven_route(ym, y_avg, y9_y0)) {  // 인식 안됨 가끔
+									cout << cm.at<int>(1, 1) << endl;
+									if (route(cm)) {
+										cout << "route" << endl;
+										letter.push_back(ROUTE);
+										route_cnt = letter.size();
+
+										v_route_in_cnt.push_back(0);
+
+										route_len_stat = p[0];
+										route_len = p[0] + p[2];
+										Calculation += "r";
+									}
+									else {
+										cout << "7" << endl;
+										letter.push_back(7);
+										Calculation += "7";
+									}
+								}
+								else {
+									int l_right = 0, l_left = 0;
+									for (int j = p[1] + 0.1 * p[3]; j < p[1] + 0.9 * p[3]; j++) {
+										if (img.at<uchar>(j, p[0] + 0.9 * p[2]) > 0) {
+											l_right++;
+											break;
+										}
+									}
+									for (int j = p[1] + 0.1 * p[3]; j < p[1] + 0.9 * p[3]; j++) {
+										if (img.at<uchar>(j, p[0] + 0.1 * p[2]) > 0) {
+											l_left++;
+											break;
+										}
+									}
+									if (par_left(xm, x_avg, l_right)) {
+										cout << "(" << endl;
+										letter.push_back(PARENTHESIS_LEFT);
+										Calculation += "(";
+									}
+									else if (par_right(xm, x_avg, l_left)) {
+										cout << ")" << endl;
+										letter.push_back(PARENTHESIS_RIGHT);
+										Calculation += ")";
+									}
+									else {
+										if (three_five(ym, y_avg)) {
+											Mat n_cut = img(Rect(p[0], p[1], centroid[0] - p[0], p[3]));
+											vector<vector<Point>> contours_cut;
+											findContours(n_cut, contours_cut, RETR_LIST, CHAIN_APPROX_SIMPLE); // 외각선 검출
+											if (contours_cut.size() == 2) {
+												cout << "5" << endl;
+												letter.push_back(5);
+												Calculation += "5";
+											}
+											else if (contours_cut.size() == 3) {
+												cout << "3" << endl;
+												letter.push_back(3);
+												Calculation += "3";
+											}
+											else {
+												cout << "인식안되서 overflow으로 처리 " << endl;
+												letter.push_back(overflow);
+											}
+										}
+										else if (two(ym, y_avg)) {
+											cout << "2" << endl;
+											letter.push_back(2);
+											Calculation += "2";
+										}
+										else {
+											cout << "인식안되서 overflow으로 처리 " << endl;
+											cout << ".." << endl;
+											letter.push_back(overflow);
+										}
+									}
+								}
+							}
+						}
 					}
 				}
-				else if (contours.size() == 3) {
-					cout << "8" << endl;
-					letter.push_back(8);
-					Calculation += "8";
-				}
-				else {
-					cout << "인식안되서 overflow으로 처리 " << endl;
-					letter.push_back(overflow);
-				}
-				if (p[0] > route_len_stat and p[0] + p[2] < route_len) {
-					route_in_cnt++;
-					v_route_in_cnt.back()++;
-				}
-
-				if (before_p1 > p[1] + p[3]) {
-					letter.emplace(letter.end() - 1, SQUARE);
-					Calculation.insert(Calculation.size() - 1, "^");
-				}
-
-				if (letter.back() == PO) {
-					before_p1 = 0;
-				}
-				else {
-					before_p1 = p[1];
-				}
-
-				/*
-				// 바운딩 박스
-				rectangle(img, Rect(p[0], p[1], p[2], p[3]), Scalar(255), 1);
-
-				// 무게중심
-				line(img, Point(p[0], centroid[1]), Point(p[0] + p[2], centroid[1]), Scalar(255), 1);
-				line(img, Point(centroid[0], p[1]), Point(centroid[0], p[1] + p[3]), Scalar(255), 1);
-
-				// xm
-				for (int i = 1; i < 10; i++) {
-					line(img, Point(p[0] + 0.1 * i * p[2], p[1]), Point(p[0] + 0.1 * i * p[2], p[1] + p[3]), Scalar(255), 1);
-				}
-
-				// ym
-				for (int i = 1; i < 10; i++) {
-					line(img, Point(p[0], p[1] + 0.1 * i * p[3]), Point(p[0] + p[2], p[1] + 0.1 * i * p[3]), Scalar(255), 1);
-				}
-				*/
 			}
+		}
+	}
+	else if (contours.size() == 2) {
 
+		if (zero(cm, cm_avg, ym, y_avg, xm, x_avg)) {
+			cout << "0" << endl;
+			letter.push_back(0);
+			Calculation += "0";
+		}
+		else if (four(xm, x_avg, ym, y_avg)) {
+			cout << "4" << endl;
+			letter.push_back(4);
+			Calculation += "4";
+		}
+		else if (nine(xm, x_avg)) {
+			cout << "9" << endl;
+			//	cout << "cm(0,1) : " << cm.at<int>(0, 1) << ", cm(1,0) : " << cm.at<int>(1, 0) << endl;
+			letter.push_back(9);
+			Calculation += "9";
+		}
+		else if (six(xm, x_avg)) {
+			if (e_(cm)) {
+				cout << "e" << endl;
+				if (letter.size() != 0 and letter.back() != SQUARE and letter.back() > overflow) {
+					letter.push_back(TIMES);
+				}
+				letter.push_back(2.718281828459);
+				Calculation += "e";
+			}
+			else {
+				cout << "6" << endl;
+				//	cout << "cm(0,1) : " << cm.at<int>(0, 1) << ", cm(1,0) : " << cm.at<int>(1, 0) << endl;
+				letter.push_back(6);
+				Calculation += "6";
 
-			// 루트에 괄호 추가
+				cout << " 9 dkf" << endl;
+				cout << xm.at<int>(0, 9) + xm.at<int>(0, 8) << " " << 2.5 * x_avg << endl;
+				cout << xm.at<int>(0, 7) + xm.at<int>(0, 8) << " " << 2.5 * x_avg << endl;
+			}
+		}
+		else {
+			cout << "인식안되서 overflow으로 처리 " << endl;
+			letter.push_back(overflow);
+			xm.at<int>(0, 0) + xm.at<int>(0, 1) + xm.at<int>(0, 2) > 3 * x_avg;
+			cout << "xm(0,0~3) :" << xm.at<int>(0, 0) << ", " << xm.at<int>(0, 1) << ", " << xm.at<int>(0, 2) << endl;
+			cout << "x_avg = " << x_avg;
+			cout << "cm(0,1) : " << cm.at<int>(0, 1) << ", cm(1,0) : " << cm.at<int>(1, 0) << endl;
+		}
+	}
+	else if (contours.size() == 3) {
+		cout << "8" << endl;
+		letter.push_back(8);
+		Calculation += "8";
+	}
+	else {
+		cout << "인식안되서 overflow으로 처리 " << endl;
+		letter.push_back(overflow);
+	}
+	if (p[0] > route_len_stat and p[0] + p[2] < route_len) {
+		route_in_cnt++;
+		v_route_in_cnt.back()++;
+	}
+
+	if (before_p1 > p[1] + p[3]) {
+		letter.emplace(letter.end() - 1, SQUARE);
+		Calculation.insert(Calculation.size() - 1, "^");
+	}
+
+	if (letter.back() == PO) {
+		before_p1 = 0;
+	}
+	else {
+		before_p1 = p[1];
+	}
+
+	/*
+	// 바운딩 박스
+	rectangle(img, Rect(p[0], p[1], p[2], p[3]), Scalar(255), 1);
+
+	// 무게중심
+	line(img, Point(p[0], centroid[1]), Point(p[0] + p[2], centroid[1]), Scalar(255), 1);
+	line(img, Point(centroid[0], p[1]), Point(centroid[0], p[1] + p[3]), Scalar(255), 1);
+
+	// xm
+	for (int i = 1; i < 10; i++) {
+		line(img, Point(p[0] + 0.1 * i * p[2], p[1]), Point(p[0] + 0.1 * i * p[2], p[1] + p[3]), Scalar(255), 1);
+	}
+
+	// ym
+	for (int i = 1; i < 10; i++) {
+		line(img, Point(p[0], p[1] + 0.1 * i * p[3]), Point(p[0] + p[2], p[1] + 0.1 * i * p[3]), Scalar(255), 1);
+	}
+	*/
+}
+'''
+
+### 숫자, 기호 구분 알고리즘
+
+''' 
+// 루트에 괄호 추가
 			cout << Calculation << endl;
 			int v_k = 0;
 			if (v_route_in_cnt.size() > 0) {
@@ -643,6 +662,12 @@ void on_mouse(int event, int x, int y, int flags, void* userdata) {
 		break;
 	}
 }
+
+```
+
+### 함수 정의
+
+''' c++
 Mat y_cut(Mat m) { // 0~9 : 각 번호의 합, 10 : 전체합
 	Mat img = m;
 	Mat ym = Mat::zeros(11, 1, CV_32SC1);
